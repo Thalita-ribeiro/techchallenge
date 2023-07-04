@@ -14,7 +14,9 @@ public class EletrodomesticoServiceImpl implements EletrodomesticoService {
 
     @Autowired
     private EletrodomesticoRepository eletrodomesticoRepository;
+
     private static final Logger LOGGER = LogManager.getLogger(EletrodomesticoServiceImpl.class);
+
     @Override
     public EletrodomesticoDTO cadastrarEndereco(EletrodomesticoDTO eletrodomesticoDTO) {
         LOGGER.info("Inicio do metódo");

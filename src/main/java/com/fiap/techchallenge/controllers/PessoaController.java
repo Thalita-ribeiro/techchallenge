@@ -2,8 +2,6 @@ package com.fiap.techchallenge.controllers;
 
 import com.fiap.techchallenge.dtos.PessoaDTO;
 import com.fiap.techchallenge.services.PessoaService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,12 +21,17 @@ public class PessoaController {
     private PessoaService pessoaService;
 
     private static final Logger LOGGER = LogManager.getLogger(PessoaController.class);
+
     @PostMapping
-    public ResponseEntity cadastro(@Valid @RequestBody PessoaDTO pessoaDTO,
-                                   HttpServletRequest request, HttpServletResponse response){
-        LOGGER.info("Inicio da requisição");
-        PessoaDTO pessoaGravada =pessoaService.cadastrarPessoa(pessoaDTO);
-        LOGGER.info("Fim da requisição");
-        return ResponseEntity.status(HttpStatus.CREATED).body(pessoaGravada);
+    public ResponseEntity<PessoaDTO> cadastro(@Valid @RequestBody PessoaDTO pessoaDTO) {
+        try {
+            LOGGER.info("Inicio da requisição");
+            PessoaDTO pessoaGravada = pessoaService.cadastrarPessoa(pessoaDTO);
+            LOGGER.info("Fim da requisição");
+            return ResponseEntity.status(HttpStatus.CREATED).body(pessoaGravada);
+        } catch (Exception e) {
+            LOGGER.error("Erro durante o cadastro da pessoa: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

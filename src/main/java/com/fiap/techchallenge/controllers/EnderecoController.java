@@ -2,8 +2,6 @@ package com.fiap.techchallenge.controllers;
 
 import com.fiap.techchallenge.dtos.EnderecoDTO;
 import com.fiap.techchallenge.services.EnderecoService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,11 +21,17 @@ public class EnderecoController {
     private EnderecoService enderecoService;
 
     private static final Logger LOGGER = LogManager.getLogger(EnderecoController.class);
+
     @PostMapping
-    public ResponseEntity cadastro(@Valid @RequestBody EnderecoDTO enderecoDTO, HttpServletRequest request, HttpServletResponse response){
+    public ResponseEntity<EnderecoDTO> cadastro(@Valid @RequestBody EnderecoDTO enderecoDTO) {
         LOGGER.info("Inicio da requisição");
-        EnderecoDTO enderecoGravado = enderecoService.cadastrarEndereco(enderecoDTO);
-        LOGGER.info("Fim da requisição");
-        return ResponseEntity.status(HttpStatus.CREATED).body(enderecoGravado);
+        try {
+            EnderecoDTO enderecoGravado = enderecoService.cadastrarEndereco(enderecoDTO);
+            LOGGER.info("Fim da requisição");
+            return ResponseEntity.status(HttpStatus.CREATED).body(enderecoGravado);
+        } catch (Exception e) {
+            LOGGER.error("Erro durante o cadastro do endereço: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

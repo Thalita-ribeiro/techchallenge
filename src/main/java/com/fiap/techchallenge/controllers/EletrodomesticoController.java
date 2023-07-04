@@ -2,8 +2,6 @@ package com.fiap.techchallenge.controllers;
 
 import com.fiap.techchallenge.dtos.EletrodomesticoDTO;
 import com.fiap.techchallenge.services.EletrodomesticoService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,12 +19,19 @@ public class EletrodomesticoController {
 
     @Autowired
     private EletrodomesticoService eletrodomesticoService;
+
     private static final Logger LOGGER = LogManager.getLogger(EletrodomesticoController.class);
+
     @PostMapping
-    public ResponseEntity cadastro(@Valid @RequestBody EletrodomesticoDTO eletrodomesticoDTO, HttpServletRequest request, HttpServletResponse response){
-        LOGGER.info("Inicio da requisição");
-        EletrodomesticoDTO enderecoGravado = eletrodomesticoService.cadastrarEndereco(eletrodomesticoDTO);
-        LOGGER.info("Fim da requisição");
-        return ResponseEntity.status(HttpStatus.CREATED).body(enderecoGravado);
+    public ResponseEntity<EletrodomesticoDTO> cadastro(@Valid @RequestBody EletrodomesticoDTO eletrodomesticoDTO) {
+        try {
+            LOGGER.info("Inicio da requisição");
+            EletrodomesticoDTO enderecoGravado = eletrodomesticoService.cadastrarEndereco(eletrodomesticoDTO);
+            LOGGER.info("Fim da requisição");
+            return ResponseEntity.status(HttpStatus.CREATED).body(enderecoGravado);
+        } catch (Exception e) {
+            LOGGER.error("Erro ao cadastrar um eletrodomestico: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }
